@@ -8,33 +8,34 @@
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
   body { background-color: #f8fafc; color: #1e293b; line-height: 1.6; padding: 20px; }
-  .container { max-width: 800px; margin: 0 auto; }
+  .container { max-width: 900px; margin: 0 auto; }
   header { text-align: center; margin-bottom: 30px; padding: 20px; background: #0f766e; color: white; border-radius: 12px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
   header h1 { font-size: 24px; margin-bottom: 8px; }
   header p { font-size: 14px; opacity: 0.9; }
   .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
   .card h2 { font-size: 18px; color: #0f766e; margin-bottom: 15px; border-bottom: 2px solid #ccfbf1; padding-bottom: 8px; }
-  label { display: block; font-size: 15px; font-weight: 600; margin-bottom: 8px; color: #334155; }
-  input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; margin-bottom: 15px; font-family: inherit; }
   
-  .question-group { margin-bottom: 15px; padding: 10px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .question-group label { font-size: 14px; }
-  .radio-group { display: flex; gap: 15px; margin-top: 5px; }
-  .radio-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; cursor: pointer; }
-  input[type="radio"] { width: auto; margin: 0; accent-color: #0f766e; }
+  .question-group { margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
+  .question-group label.q-text { display: block; font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #1e293b; }
+  .radio-group { display: flex; gap: 20px; }
+  .radio-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; }
+  input[type="radio"] { width: 20px; height: 20px; accent-color: #0f766e; cursor: pointer; }
 
-  button { width: 100%; padding: 14px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 16px; background: #0f766e; color: white; transition: 0.2s; }
+  .actions { margin-top: 20px; text-align: center; }
+  button { padding: 14px 30px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 16px; background: #0f766e; color: white; transition: 0.2s; width: 100%; }
   button:hover { background: #115e59; }
   
-  .result-area { display: none; margin-top: 20px; padding: 20px; border-radius: 12px; border: 2px solid #0f766e; background: #f0fdfa; }
-  .result-area h3 { color: #0f766e; font-size: 20px; margin-bottom: 10px; }
-  .diagnosis-title { font-size: 22px; font-weight: bold; color: #dc2626; margin-bottom: 10px; display: block; }
-  .justification { font-size: 14px; color: #475569; margin-bottom: 15px; }
-  .recommendation { background: #fff; padding: 15px; border-radius: 8px; border-right: 4px solid #0f766e; font-size: 15px; }
+  .result-area { display: none; margin-top: 30px; padding: 20px; border-radius: 12px; border: 2px solid #0f766e; background: #f0fdfa; }
+  .result-area h3 { color: #0f766e; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #0f766e; padding-bottom: 8px; }
+  .diagnosis-title { font-size: 24px; font-weight: bold; color: #dc2626; margin-bottom: 15px; display: block; }
+  .section-title { font-size: 18px; font-weight: bold; color: #0f766e; margin: 20px 0 10px; }
+  .justification { font-size: 15px; color: #334155; margin-bottom: 15px; background: white; padding: 10px; border-radius: 8px; border-right: 4px solid #0f766e; }
+  .recommendation { background: #fff; padding: 15px; border-radius: 8px; border-right: 4px solid #0f766e; font-size: 15px; margin-bottom: 15px; }
+  .print-btn { background: #0284c7; margin-top: 20px; }
   
   @media print {
     body { background: white; padding: 0; font-family: Arial, sans-serif; }
-    .card, button, .no-print { display: none !important; }
+    .card, .actions, header p { display: none !important; }
     .result-area { display: block !important; border: none; padding: 0; }
   }
 </style>
@@ -43,138 +44,160 @@
 <div class="container">
   <header>
     <h1>المساعد التشخيصي الذكي</h1>
-    <p>اضطرابات اللغة والنطق (بناءً على DSM-5 و ASHA)</p>
+    <p>بناءً على استمارة المقابلة الأولية (Intake Interview) ومعايير DSM-5</p>
     <p>إعداد: أخصائي تقويم كلام ولغة Adham Salloum</p>
   </header>
 
-  <div class="card no-print">
+  <div class="card">
     <h2>بيانات المستفيد</h2>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-      <div><label>اسم المستفيد:</label><input type="text" id="childName" placeholder="..."></div>
-      <div><label>العمر:</label><input type="number" id="childAge" placeholder="بالسنوات"></div>
+      <div>
+        <label>اسم المستفيد:</label>
+        <input type="text" id="childName" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;" placeholder="...">
+      </div>
+      <div>
+        <label>العمر:</label>
+        <input type="number" id="childAge" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;" placeholder="بالسنوات">
+      </div>
     </div>
   </div>
 
-  <div class="card no-print">
-    <h2>استمارة التقييم التشخيصي</h2>
+  <div class="card">
+    <h2>1. أسئلة الفهم (Receptive Language)</h2>
     
     <div class="question-group">
-      <label>1. هل يعاني المستفيد من صعوبة في فهم الكلام الموجه إليه (اللغة الاستقبالية)؟</label>
+      <label class="q-text">هل يبدو أن طفلك يفهمك؟ (مثال: يستجيب لاسمه، يتبع الأوامر البسيطة مثل "أعطني الكرة")</label>
       <div class="radio-group">
-        <label><input type="radio" name="q1" value="yes"> نعم</label>
-        <label><input type="radio" name="q1" value="no"> لا</label>
+        <label><input type="radio" name="q_receptive_1" value="yes"> نعم</label>
+        <label><input type="radio" name="q_receptive_1" value="no"> لا</label>
       </div>
     </div>
 
     <div class="question-group">
-      <label>2. هل يعاني المستفيد من صعوبة في التعبير عن نفسه (قلة المفردات، جمل قصيرة، صعوبة في ترتيب الكلمات)؟</label>
+      <label class="q-text">هل يمكنه اتباع الأوامر المكونة من خطوتين؟ (مثال: "اجلب حذاءك ثم افتح الباب")</label>
       <div class="radio-group">
-        <label><input type="radio" name="q2" value="yes"> نعم</label>
-        <label><input type="radio" name="q2" value="no"> لا</label>
+        <label><input type="radio" name="q_receptive_2" value="yes"> نعم</label>
+        <label><input type="radio" name="q_receptive_2" value="no"> لا</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>2. أسئلة التعبير (Expressive Language)</h2>
+    
+    <div class="question-group">
+      <label class="q-text">هل عادة ما تفهم ما يقوله طفلك؟ (وضوح الكلام)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_expressive_1" value="yes"> نعم</label>
+        <label><input type="radio" name="q_expressive_1" value="no"> لا</label>
       </div>
     </div>
 
     <div class="question-group">
-      <label>3. هل يعاني المستفيد من أخطاء في نطق الأصوات (إبدال، حذف، تشويه للحروف) مقارنة بأقرانه؟</label>
+      <label class="q-text">هل يضع طفلك كلمتين معاً لتكوين جملة؟ (مثال: "أريد ماء"، "بابا راح")</label>
       <div class="radio-group">
-        <label><input type="radio" name="q3" value="yes"> نعم</label>
-        <label><input type="radio" name="q3" value="no"> لا</label>
+        <label><input type="radio" name="q_expressive_2" value="yes"> نعم</label>
+        <label><input type="radio" name="q_expressive_2" value="no"> لا</label>
       </div>
     </div>
 
     <div class="question-group">
-      <label>4. هل الأخطاء النطقية ثابتة وصعبة التصحيح (مثل إبدال السين ثاء، أو الراء لام)؟</label>
+      <label class="q-text">هل يستخدم طفلك الكلمات للتعبير عن احتياجاته (الطلب) بدلاً من البكاء أو الإشارة فقط؟</label>
       <div class="radio-group">
-        <label><input type="radio" name="q4" value="yes"> نعم</label>
-        <label><input type="radio" name="q4" value="no"> لا</label>
+        <label><input type="radio" name="q_expressive_3" value="yes"> نعم</label>
+        <label><input type="radio" name="q_expressive_3" value="no"> لا</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>3. أسئلة التواصل الاجتماعي (Pragmatics)</h2>
+    
+    <div class="question-group">
+      <label class="q-text">هل ينظر إليك طفلك عندما تتحدث إليه؟ (التواصل البصري)</label>
+      <div class="radio-group">
+        <label><input type="radio" name="q_social_1" value="yes"> نعم</label>
+        <label><input type="radio" name="q_social_1" value="no"> لا</label>
       </div>
     </div>
 
     <div class="question-group">
-      <label>5. هل هناك صعوبة واضحة في التخطيط الحركي للكلام (يعرف الكلمة لكن لا يستطيع نطقها، ويحاول ويحاول)؟</label>
+      <label class="q-text">هل يبدو أنه يستمتع باللعب مع الأطفال الآخرين؟</label>
       <div class="radio-group">
-        <label><input type="radio" name="q5" value="yes"> نعم</label>
-        <label><input type="radio" name="q5" value="no"> لا</label>
+        <label><input type="radio" name="q_social_2" value="yes"> نعم</label>
+        <label><input type="radio" name="q_social_2" value="no"> لا</label>
       </div>
     </div>
+  </div>
 
-    <div class="question-group">
-      <label>6. هل يوجد ضعف أو ارتخاء أو توتر واضح في عضلات الفم (اللسان، الشفاه) يؤثر على وضوح الكلام؟</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q6" value="yes"> نعم</label>
-        <label><input type="radio" name="q6" value="no"> لا</label>
-      </div>
-    </div>
-
-    <button onclick="analyzeDiagnosis()">🔍 تحليل الإجابات وإظهار التشخيص المحتمل</button>
+  <div class="actions">
+    <button onclick="analyzeLanguage()">🔍 تحليل الإجابات واستخراج التشخيص المحتمل</button>
   </div>
 
   <div class="result-area" id="resultArea">
-    <h3>نتيجة التحليل التشخيصي</h3>
+    <h3>التقرير التشخيصي المبدئي</h3>
     <span class="diagnosis-title" id="diagnosisTitle"></span>
+    
+    <div class="section-title">التحليل والمرجعية:</div>
     <p class="justification" id="justification"></p>
-    <div class="recommendation">
-      <strong>التوصيات والخطوات القادمة:</strong>
-      <p id="recommendationText"></p>
-    </div>
-    <button onclick="window.print()" style="margin-top:20px; background:#0284c7;" class="no-print">🖨️ طباعة التقرير التشخيصي</button>
+    
+    <div class="section-title">التوصيات والخطوات القادمة:</div>
+    <div class="recommendation" id="recommendationText"></div>
+    
+    <button onclick="window.print()" class="print-btn">🖨️ طباعة التقرير التشخيصي / حفظ PDF</button>
   </div>
 </div>
 
 <script>
-function analyzeDiagnosis() {
-  const q1 = document.querySelector('input[name="q1"]:checked');
-  const q2 = document.querySelector('input[name="q2"]:checked');
-  const q3 = document.querySelector('input[name="q3"]:checked');
-  const q4 = document.querySelector('input[name="q4"]:checked');
-  const q5 = document.querySelector('input[name="q5"]:checked');
-  const q6 = document.querySelector('input[name="q6"]:checked');
+function analyzeLanguage() {
+  // جلب الإجابات
+  const r1 = document.querySelector('input[name="q_receptive_1"]:checked');
+  const r2 = document.querySelector('input[name="q_receptive_2"]:checked');
+  const e1 = document.querySelector('input[name="q_expressive_1"]:checked');
+  const e2 = document.querySelector('input[name="q_expressive_2"]:checked');
+  const e3 = document.querySelector('input[name="q_expressive_3"]:checked');
+  const s1 = document.querySelector('input[name="q_social_1"]:checked');
+  const s2 = document.querySelector('input[name="q_social_2"]:checked');
 
-  if (!q1 || !q2 || !q3 || !q4 || !q5 || !q6) {
+  if (!r1 || !r2 || !e1 || !e2 || !e3 || !s1 || !s2) {
     alert('الرجاء الإجابة على جميع الأسئلة أولاً لإعطاء تحليل دقيق.');
     return;
   }
 
-  const hasLanguageComprehensionIssue = q1.value === 'yes';
-  const hasLanguageExpressionIssue = q2.value === 'yes';
-  const hasSpeechSoundIssue = q3.value === 'yes';
-  const hasPhonologicalIssue = q4.value === 'yes';
-  const hasApraxiaIssue = q5.value === 'yes';
-  const hasDysarthriaIssue = q6.value === 'yes';
+  // تحويل الإجابات إلى منطقية
+  let receptiveScore = (r1.value === 'yes' ? 1 : 0) + (r2.value === 'yes' ? 1 : 0);
+  let expressiveScore = (e1.value === 'yes' ? 1 : 0) + (e2.value === 'yes' ? 1 : 0) + (e3.value === 'yes' ? 1 : 0);
+  let socialScore = (s1.value === 'yes' ? 1 : 0) + (s2.value === 'yes' ? 1 : 0);
 
   let diagnosis = "";
   let justification = "";
   let recommendation = "";
 
-  // خوارزمية التشخيص
-  if (hasApraxiaIssue) {
-    diagnosis = "اضطراب الأداء الحركي الكلامي (Childhood Apraxia of Speech)";
-    justification = "بناءً على وجود صعوبة في التخطيط الحركي للكلام (المستفيد يعرف ما يريد قوله ولكن لا يستطيع تنسيق حركات الفم لإخراج الكلمة).";
-    recommendation = "يوصى بتقييم شامل للحركة الفموية، وتقييم ديناميكي للنطق، وربما استخدام التقييم (Kaufman Speech Praxis Test). يفضل التدخل المبكر المكثف.";
-  } else if (hasDysarthriaIssue) {
-    diagnosis = "اضطراب النطق اللساني (Dysarthria)";
-    justification = "بناءً على وجود ضعف أو ارتخاء أو توتر في عضلات النطق (اللسان، الشفاه) مما يؤثر على وضوح الكلام.";
-    recommendation = "يوصى بتقييم عصبي (طبيب أعصاب)، مع التركيز في العلاج على تقوية عضلات الفم واللسان وتدريبات التنفس والنطق الواضح.";
-  } else if (hasLanguageComprehensionIssue && hasLanguageExpressionIssue) {
-    diagnosis = "اضطراب اللغة الاستقبالي والتعبيري المختلط (Mixed Receptive-Expressive Language Disorder)";
-    justification = "بناءً على وجود قصور في فهم اللغة (الاستقبال) وفي التعبير عنها في نفس الوقت، وفقاً لمعايير DSM-5.";
-    recommendation = "تقييم شامل للغة (تقييم المفردات، الفهم، التعبير)، وتصميم خطة علاجية تشمل تدريبات الفهم السمعي، وتوسيع الحصيلة اللغوية، وتدريب الأهل على تقنيات النمذجة اللغوية.";
-  } else if (hasLanguageComprehensionIssue) {
+  // الخوارزمية التشخيصية بناءً على الإجابات
+  if (socialScore === 0 && expressiveScore === 0) {
+    diagnosis = "اضطراب طيف التوحد (Autism Spectrum Disorder - ASD) - اشتباه عالي";
+    justification = "بناءً على غياب التواصل البصري، وغياب التفاعل الاجتماعي، مع غياب اللغة التعبيرية. هذه العلامات تتوافق مع المعايير التشخيصية لـ DSM-5 (نقص التواصل الاجتماعي والتفاعل).";
+    recommendation = "يوصى بتحويل فوري لتقييم تشخيصي متخصص لطيف التوحد (مثل ADOS-2)، وبدء تدخل سلوكي مبكر (ABA) بعد التقييم. يرجى فتح موقع ABLLS-R لإجراء تقييم مهارات شامل.";
+  } 
+  else if (receptiveScore === 0 && expressiveScore === 0) {
+    diagnosis = "اضطراب اللغة المختلط (Mixed Receptive-Expressive Language Disorder)";
+    justification = "بناءً على أن الطفل يعاني من صعوبة في فهم اللغة (الاستقبال) وفي التعبير عنها في نفس الوقت، وفقاً لمعايير DSM-5 و ASHA.";
+    recommendation = "تقييم شامل للغة (استخدام CELF-Preschool أو PLS-5). تصميم خطة علاجية تشمل تدريبات الفهم السمعي، وتوسيع الحصيلة اللغوية، وتدريب الأهل على تقنيات النمذجة اللغوية.";
+  } 
+  else if (receptiveScore === 0 && expressiveScore > 0) {
     diagnosis = "اضطراب اللغة الاستقبالي (Receptive Language Disorder)";
-    justification = "بناءً على وجود قصور في مهارات فهم اللغة المسموعة والمنطوقة، مع سلامة نسبية في التعبير.";
+    justification = "بناءً على وجود قصور في مهارات فهم اللغة المسموعة، مع وجود مهارات تعبيرية نسبياً أفضل.";
     recommendation = "التقييم الدقيق لمهارات الفهم (اتباع التعليمات، التمييز السمعي)، وبدء العلاج بتدريبات الإدراك السمعي.";
-  } else if (hasLanguageExpressionIssue) {
+  } 
+  else if (receptiveScore > 0 && expressiveScore === 0) {
     diagnosis = "اضطراب اللغة التعبيري (Expressive Language Disorder)";
-    justification = "بناءً على وجود قصور في المهارات التعبيرية (المفردات، القواعد، بناء الجمل) مع فهم سليم.";
+    justification = "بناءً على وجود قصور في المهارات التعبيرية (المفردات، بناء الجمل)، مع فهم سليم.";
     recommendation = "تقييم اللغة التعبيرية، وتصميم خطة علاجية لزيادة المفردات وتدريب استخدام الجمل، واستخدام التقييمات المعتمدة مثل ABLLS-R.";
-  } else if (hasPhonologicalIssue || hasSpeechSoundIssue) {
-    diagnosis = "اضطراب النطق الصوتي/الفونولوجي (Phonological Disorder)";
-    justification = "بناءً على وجود أخطاء ثابتة في نطق الأصوات (إبدال، حذف) تؤثر على وضوح الكلام.";
-    recommendation = "تقييم النطق (Articulation Test)، وتحديد الأصوات المضطربة، وبدء العلاج بتدريبات التمييز السمعي والنطق الصحيح للأصوات.";
-  } else {
-    diagnosis = "لا يوجد اضطراب واضح بناءً على الإجابات الحالية";
-    justification = "المستفيد لا يظهر سمات واضحة لاضطرابات اللغة أو النطق الأساسية بناءً على هذه الأسئلة.";
-    recommendation = "يوصى بمراقبة النمو اللغوي، أو إجراء تقييمات أعمق إذا كانت هناك شكوى من جوانب أخرى (مثل التأتأة أو الصوت).";
+  } 
+  else {
+    diagnosis = "تطور لغوي ضمن الحدود الطبيعية (أو تأخر بسيط)";
+    justification = "بناءً على الإجابات، يبدو أن الطفل يمتلك مهارات فهم وتعبير وتواصل اجتماعي أساسية.";
+    recommendation = "يوصى بمراقبة النمو اللغوي بشكل دوري. إذا استمر القلق، يمكن إجراء تقييم لغوي رسمي (Formal Assessment).";
   }
 
   document.getElementById('diagnosisTitle').textContent = diagnosis;
