@@ -17,17 +17,17 @@
   label { display: block; font-size: 15px; font-weight: 600; margin-bottom: 5px; color: #475569; }
   input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; font-family: inherit; margin-bottom: 15px; }
   
-  .age-group-title { font-size: 16px; font-weight: 700; margin: 20px 0 10px; padding: 10px; border-radius: 8px; border-right: 4px solid; }
+  .age-group-title { font-size: 16px; font-weight: 700; margin: 20px 0 10px; padding: 10px; border-radius: 8px; border-right: 4px solid; text-align: center; }
   .age-group-title.current-age { background: #fefce8; border-right-color: #eab308; color: #854d0e; }
   .age-group-title.previous-age { background: #f1f5f9; border-right-color: #94a3b8; color: #475569; }
   
-  .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; gap: 10px; }
+  .item-row { display: flex; flex-direction: column; padding: 12px; border-bottom: 1px solid #eee; gap: 10px; }
   .item-row:last-child { border-bottom: none; }
-  .item-text { flex: 1; font-size: 14px; text-align: right; }
+  .item-text { font-size: 15px; text-align: right; font-weight: 500; }
   
-  .rating-group { display: flex; gap: 10px; flex-shrink: 0; }
-  .rating-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; cursor: pointer; margin-bottom: 0; font-size: 13px; }
-  input[type="radio"] { width: 18px; height: 18px; accent-color: #0f766e; margin: 0; }
+  .rating-group { display: flex; justify-content: flex-end; gap: 15px; }
+  .rating-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; cursor: pointer; margin-bottom: 0; font-size: 14px; }
+  input[type="radio"] { width: 20px; height: 20px; accent-color: #0f766e; margin: 0; }
 
   .actions { margin-top: 20px; text-align: center; }
   button { padding: 14px 30px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 16px; background: #0f766e; color: white; transition: 0.2s; width: 100%; }
@@ -36,7 +36,6 @@
   .result-area { display: none; margin-top: 30px; padding: 20px; border-radius: 12px; border: 2px solid #0f766e; background: #f0fdfa; }
   .result-area h3 { color: #0f766e; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #0f766e; padding-bottom: 8px; }
   .section-title { font-size: 18px; font-weight: bold; color: #0f766e; margin: 20px 0 10px; }
-  .justification { font-size: 15px; color: #334155; margin-bottom: 15px; background: white; padding: 10px; border-radius: 8px; border-right: 4px solid #0f766e; }
   .recommendation { background: #fff; padding: 15px; border-radius: 8px; border-right: 4px solid #0f766e; font-size: 15px; margin-bottom: 15px; }
   .print-btn { background: #0284c7; margin-top: 20px; }
   
@@ -67,7 +66,6 @@
     <h2>استمارة التقييم</h2>
     <p style="font-size:13px; color:#666; margin-bottom:15px;">يرجى تحديد (يوجد) إذا كان الطفل يمتلك المهارة، (لا يوجد) إذا لم يكن، أو (أحياناً).</p>
     
-    <!-- سيتم توليد البنود هنا بواسطة JS -->
     <div id="itemsContainer"></div>
     <div id="noItemsMessage" class="hidden" style="text-align:center; padding:20px; color:#666;">الرجاء إدخال عمر المستفيد أولاً لعرض المهارات المناسبة.</div>
   </div>
@@ -84,7 +82,7 @@
 </div>
 
 <script>
-// بيانات النموذج (Form 8-1) مع الترجمة العربية
+// تصحيح النطاقات العمرية (بحيث يكون 3 سنوات ضمن فئة 2-3)
 const inventoryData = [
   {
     ageGroup: "0-6 أشهر",
@@ -160,7 +158,7 @@ const inventoryData = [
   },
   {
     ageGroup: "2-3 سنوات",
-    minAge: 2.08, maxAge: 3.0,
+    minAge: 2.08, maxAge: 3.09, // تعديل النطاق ليشمل 3 سنوات
     items: [
       { ar: "الكلام مفهوم بنسبة 50% إلى 75%." },
       { ar: "يفهم 'واحد' و'كل'." },
@@ -182,14 +180,14 @@ const inventoryData = [
       { ar: "يستخدم الحروف الساكنة الأولية باستمرار (وإن كان بعضها ينطق خطأ)." },
       { ar: "يحذف الحروف الساكنة الوسطى بشكل متكرر." },
       { ar: "يحذف أو يستبدل الحروف الساكنة النهائية بشكل متكرر." },
-      { ar: "يستخدم الفعل المساعد 'is' بما في ذلك الصيغة المختصرة." },
-      { ar: "يستخدم بعض أفعال الماضي المنتظمة، والضمائر، وصيغ الملكية، والأوامر." },
+      { ar: "يستخدم الضمائر بشكل مناسب في الجمل (أنا، أنت، هو، هي)." }, // استبدال الفعل المساعد
+      { ar: "يستخدم بعض أفعال الماضي المنتظمة، وصيغ الملكية، والأوامر." },
       { ar: "يحافظ على الموضوع عبر عدة أدوار حوارية." }
     ]
   },
   {
     ageGroup: "3-4 سنوات",
-    minAge: 3.08, maxAge: 4.0,
+    minAge: 3.1, maxAge: 4.0, // تعديل النطاق ليبدأ بعد 3.09
     items: [
       { ar: "يفهم وظائف الأشياء." },
       { ar: "يفهم الأضداد (مثل توقف-اذهب، داخل-خارج، كبير-صغير)." },
@@ -205,7 +203,7 @@ const inventoryData = [
       { ar: "لديه حصيلة تعبيرية من 800 إلى 1500 كلمة أو أكثر." },
       { ar: "يزيد من سرعة الكلام." },
       { ar: "الكلام مفهوم بنسبة 80% تقريباً." },
-      { ar: "يستخدم 'is'، 'are'، و 'am' بشكل مناسب في الجمل." },
+      { ar: "يستخدم أفعال الكينونة بشكل مناسب في الجمل." }, // تعريب البند
       { ar: "يروي حدثين بالترتيب الزمني." },
       { ar: "ينخرط في محادثات طويلة." },
       { ar: "تتحسن قواعد الجملة، وإن استمرت بعض الأخطاء." },
@@ -216,7 +214,7 @@ const inventoryData = [
   },
   {
     ageGroup: "4-5 سنوات",
-    minAge: 4.08, maxAge: 5.0,
+    minAge: 4.1, maxAge: 5.0,
     items: [
       { ar: "يستمر في فهم المفاهيم المكانية." },
       { ar: "لديه حصيلة تعبيرية من 900 إلى 2000 كلمة أو أكثر." },
@@ -237,7 +235,7 @@ const inventoryData = [
   },
   {
     ageGroup: "5-6 سنوات",
-    minAge: 5.08, maxAge: 6.0,
+    minAge: 5.1, maxAge: 6.0,
     items: [
       { ar: "يتبع التعليمات الموجهة للمجموعة." },
       { ar: "يسأل أسئلة 'كيف'." },
@@ -259,7 +257,7 @@ const inventoryData = [
   },
   {
     ageGroup: "6-7 سنوات",
-    minAge: 6.08, maxAge: 7.0,
+    minAge: 6.1, maxAge: 7.0,
     items: [
       { ar: "يفهم اليسار واليمين." },
       { ar: "يستخدم أوصافاً أكثر تعقيداً." },
@@ -294,11 +292,11 @@ function filterAgeGroups() {
   let found = false;
 
   inventoryData.forEach((group, groupIndex) => {
-    if (childAge >= group.minAge - 0.1) {
+    // الفلترة: يظهر إذا كان عمر الطفل أكبر من أو يساوي الحد الأدنى للمجموعة
+    if (childAge >= group.minAge) {
       found = true;
       const groupDiv = document.createElement('div');
       
-      // تحديد ما إذا كانت هذه هي الفئة العمرية الحالية أم سابقة
       const isCurrentAge = (childAge >= group.minAge && childAge <= group.maxAge);
       const titleClass = isCurrentAge ? "current-age" : "previous-age";
       const titleText = isCurrentAge ? "(العمر الحالي - التركيز هنا)" : "(مراجعة مهارات سابقة)";
