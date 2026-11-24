@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>المساعد التشخيصي الذكي | Adham Salloum</title>
+<title>جرد تطور اللغة | Adham Salloum</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap');
   * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Cairo', sans-serif; }
@@ -14,12 +14,18 @@
   header p { font-size: 14px; opacity: 0.9; }
   .card { background: white; border-radius: 12px; padding: 20px; margin-bottom: 20px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid #e2e8f0; }
   .card h2 { font-size: 18px; color: #0f766e; margin-bottom: 15px; border-bottom: 2px solid #ccfbf1; padding-bottom: 8px; }
+  label { display: block; font-size: 15px; font-weight: 600; margin-bottom: 5px; color: #475569; }
+  input, select { width: 100%; padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 15px; font-family: inherit; margin-bottom: 15px; }
   
-  .question-group { margin-bottom: 20px; padding: 15px; background: #f8fafc; border-radius: 8px; border: 1px solid #e2e8f0; }
-  .question-group label.q-text { display: block; font-size: 15px; font-weight: 600; margin-bottom: 10px; color: #1e293b; }
-  .radio-group { display: flex; gap: 20px; }
-  .radio-group label { display: flex; align-items: center; gap: 8px; cursor: pointer; font-size: 15px; }
-  input[type="radio"] { width: 20px; height: 20px; accent-color: #0f766e; cursor: pointer; }
+  .age-group-title { font-size: 16px; font-weight: 700; color: #0f766e; margin: 20px 0 10px; padding: 10px; background: #f0fdfa; border-radius: 8px; border-right: 4px solid #0f766e; }
+  
+  .item-row { display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid #eee; gap: 10px; }
+  .item-row:last-child { border-bottom: none; }
+  .item-text { flex: 1; font-size: 14px; text-align: right; }
+  
+  .rating-group { display: flex; gap: 10px; flex-shrink: 0; }
+  .rating-group label { font-weight: normal; display: flex; align-items: center; gap: 5px; cursor: pointer; margin-bottom: 0; font-size: 13px; }
+  input[type="radio"] { width: 18px; height: 18px; accent-color: #0f766e; margin: 0; }
 
   .actions { margin-top: 20px; text-align: center; }
   button { padding: 14px 30px; border-radius: 8px; border: none; font-weight: 700; cursor: pointer; font-size: 16px; background: #0f766e; color: white; transition: 0.2s; width: 100%; }
@@ -27,7 +33,6 @@
   
   .result-area { display: none; margin-top: 30px; padding: 20px; border-radius: 12px; border: 2px solid #0f766e; background: #f0fdfa; }
   .result-area h3 { color: #0f766e; font-size: 22px; margin-bottom: 15px; border-bottom: 2px solid #0f766e; padding-bottom: 8px; }
-  .diagnosis-title { font-size: 24px; font-weight: bold; color: #dc2626; margin-bottom: 15px; display: block; }
   .section-title { font-size: 18px; font-weight: bold; color: #0f766e; margin: 20px 0 10px; }
   .justification { font-size: 15px; color: #334155; margin-bottom: 15px; background: white; padding: 10px; border-radius: 8px; border-right: 4px solid #0f766e; }
   .recommendation { background: #fff; padding: 15px; border-radius: 8px; border-right: 4px solid #0f766e; font-size: 15px; margin-bottom: 15px; }
@@ -43,171 +48,326 @@
 <body>
 <div class="container">
   <header>
-    <h1>المساعد التشخيصي الذكي</h1>
-    <p>بناءً على استمارة المقابلة الأولية (Intake Interview) ومعايير DSM-5</p>
+    <h1>جرد تطور اللغة (Form 8-1)</h1>
+    <p>بناءً على Assessment of Spoken Language in Children</p>
     <p>إعداد: أخصائي تقويم كلام ولغة Adham Salloum</p>
   </header>
 
   <div class="card">
     <h2>بيانات المستفيد</h2>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:15px;">
-      <div>
-        <label>اسم المستفيد:</label>
-        <input type="text" id="childName" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;" placeholder="...">
-      </div>
-      <div>
-        <label>العمر:</label>
-        <input type="number" id="childAge" style="width:100%; padding:10px; border:1px solid #ccc; border-radius:8px;" placeholder="بالسنوات">
-      </div>
+      <div><label>اسم المستفيد:</label><input type="text" id="childName" placeholder="..."></div>
+      <div><label>العمر (بالسنوات):</label><input type="number" id="childAge" placeholder="..." step="0.1"></div>
     </div>
   </div>
 
-  <div class="card">
-    <h2>1. أسئلة الفهم (Receptive Language)</h2>
+  <div class="card" id="assessmentArea">
+    <h2>استمارة التقييم</h2>
+    <p style="font-size:13px; color:#666; margin-bottom:15px;">يرجى تحديد (يوجد) إذا كان الطفل يمتلك المهارة، (لا يوجد) إذا لم يكن، أو (أحياناً).</p>
     
-    <div class="question-group">
-      <label class="q-text">هل يبدو أن طفلك يفهمك؟ (مثال: يستجيب لاسمه، يتبع الأوامر البسيطة مثل "أعطني الكرة")</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_receptive_1" value="yes"> نعم</label>
-        <label><input type="radio" name="q_receptive_1" value="no"> لا</label>
-      </div>
-    </div>
-
-    <div class="question-group">
-      <label class="q-text">هل يمكنه اتباع الأوامر المكونة من خطوتين؟ (مثال: "اجلب حذاءك ثم افتح الباب")</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_receptive_2" value="yes"> نعم</label>
-        <label><input type="radio" name="q_receptive_2" value="no"> لا</label>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>2. أسئلة التعبير (Expressive Language)</h2>
-    
-    <div class="question-group">
-      <label class="q-text">هل عادة ما تفهم ما يقوله طفلك؟ (وضوح الكلام)</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_expressive_1" value="yes"> نعم</label>
-        <label><input type="radio" name="q_expressive_1" value="no"> لا</label>
-      </div>
-    </div>
-
-    <div class="question-group">
-      <label class="q-text">هل يضع طفلك كلمتين معاً لتكوين جملة؟ (مثال: "أريد ماء"، "بابا راح")</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_expressive_2" value="yes"> نعم</label>
-        <label><input type="radio" name="q_expressive_2" value="no"> لا</label>
-      </div>
-    </div>
-
-    <div class="question-group">
-      <label class="q-text">هل يستخدم طفلك الكلمات للتعبير عن احتياجاته (الطلب) بدلاً من البكاء أو الإشارة فقط؟</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_expressive_3" value="yes"> نعم</label>
-        <label><input type="radio" name="q_expressive_3" value="no"> لا</label>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>3. أسئلة التواصل الاجتماعي (Pragmatics)</h2>
-    
-    <div class="question-group">
-      <label class="q-text">هل ينظر إليك طفلك عندما تتحدث إليه؟ (التواصل البصري)</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_social_1" value="yes"> نعم</label>
-        <label><input type="radio" name="q_social_1" value="no"> لا</label>
-      </div>
-    </div>
-
-    <div class="question-group">
-      <label class="q-text">هل يبدو أنه يستمتع باللعب مع الأطفال الآخرين؟</label>
-      <div class="radio-group">
-        <label><input type="radio" name="q_social_2" value="yes"> نعم</label>
-        <label><input type="radio" name="q_social_2" value="no"> لا</label>
-      </div>
-    </div>
+    <!-- سيتم توليد البنود هنا بواسطة JS -->
+    <div id="itemsContainer"></div>
   </div>
 
   <div class="actions">
-    <button onclick="analyzeLanguage()">🔍 تحليل الإجابات واستخراج التشخيص المحتمل</button>
+    <button onclick="analyzeInventory()">🔍 تحليل النمو اللغوي واستخراج التشخيص</button>
   </div>
 
   <div class="result-area" id="resultArea">
-    <h3>التقرير التشخيصي المبدئي</h3>
-    <span class="diagnosis-title" id="diagnosisTitle"></span>
-    
-    <div class="section-title">التحليل والمرجعية:</div>
-    <p class="justification" id="justification"></p>
-    
-    <div class="section-title">التوصيات والخطوات القادمة:</div>
-    <div class="recommendation" id="recommendationText"></div>
-    
-    <button onclick="window.print()" class="print-btn">🖨️ طباعة التقرير التشخيصي / حفظ PDF</button>
+    <h3>تقرير تقييم النمو اللغوي</h3>
+    <div id="resultContent"></div>
+    <button onclick="window.print()" class="print-btn">🖨️ طباعة التقرير / حفظ PDF</button>
   </div>
 </div>
 
 <script>
-function analyzeLanguage() {
-  // جلب الإجابات
-  const r1 = document.querySelector('input[name="q_receptive_1"]:checked');
-  const r2 = document.querySelector('input[name="q_receptive_2"]:checked');
-  const e1 = document.querySelector('input[name="q_expressive_1"]:checked');
-  const e2 = document.querySelector('input[name="q_expressive_2"]:checked');
-  const e3 = document.querySelector('input[name="q_expressive_3"]:checked');
-  const s1 = document.querySelector('input[name="q_social_1"]:checked');
-  const s2 = document.querySelector('input[name="q_social_2"]:checked');
+// بيانات النموذج (Form 8-1) مع الترجمة العربية
+const inventoryData = [
+  {
+    ageGroup: "0-6 أشهر",
+    items: [
+      { en: "Frequently coos, gurgles, and makes pleasure sounds", ar: "يصدر أصواتاً هادئة وغرغرة وأصوات تعبير عن السعادة بشكل متكرر." },
+      { en: "Uses a different cry to express different needs", ar: "يستخدم بكاءً مختلفاً للتعبير عن احتياجات مختلفة." },
+      { en: "Smiles when spoken to", ar: "يبتسم عند التحدث إليه." },
+      { en: "Recognizes voices", ar: "يتعرف على الأصوات (يميز صوت الأم)." },
+      { en: "Localizes to sound", ar: "يوجه نظره نحو مصدر الصوت." },
+      { en: "Listens to speech", ar: "يستمع للكلام." },
+      { en: "Uses the phonemes /b/, /p/, and /m/ in babbling", ar: "يستخدم أصوات (ب، م، و) في المناغاة." },
+      { en: "Uses sounds or gestures to indicate wants", ar: "يستخدم أصواتاً أو إيماءات للتعبير عن رغباته." },
+      { en: "Responds to no and changes in tone of voice", ar: "يستجيب لكلمة 'لا' وللتغير في نبرة الصوت." }
+    ]
+  },
+  {
+    ageGroup: "7-12 شهراً",
+    items: [
+      { en: "Understands no and hot", ar: "يفهم معنى 'لا' و'حار'." },
+      { en: "Responds to simple requests", ar: "يستجيب للطلبات البسيطة." },
+      { en: "Understands and responds to own name", ar: "يفهم ويستجيب لاسمه." },
+      { en: "Recognizes words for common items (e.g., cup, shoe, juice)", ar: "يتعرف على كلمات الأشياء الشائعة (كوب، حذاء، عصير)." },
+      { en: "Babbles using long and short groups of sounds", ar: "يناغي باستخدام مجموعات طويلة وقصيرة من الأصوات." },
+      { en: "Uses a large variety of sounds in babbling", ar: "يستخدم مجموعة متنوعة من الأصوات في المناغاة." },
+      { en: "Imitates some adult speech sounds and intonation patterns", ar: "يقلد بعض أصوات الكلام ونمط التنغيم لدى الكبار." },
+      { en: "Uses speech sounds rather than only crying to get attention", ar: "يستخدم أصوات الكلام بدلاً من البكاء فقط لجذب الانتباه." },
+      { en: "Listens when spoken to", ar: "يستمع عند التحدث إليه." },
+      { en: "Uses sound approximations", ar: "يستخدم تقريب الأصوات (كلمات غير واضحة)." },
+      { en: "Begins to change babbling to jargon", ar: "يبدأ في تحويل المناغاة إلى رطانة." },
+      { en: "Uses speech intentionally for the first time", ar: "يستخدم الكلام بشكل مقصود لأول مرة." },
+      { en: "Uses nouns almost exclusively", ar: "يستخدم الأسماء تقريباً بشكل حصري." },
+      { en: "Has an expressive vocabulary of one to three words", ar: "لديه حصيلة تعبيرية من كلمة إلى ثلاث كلمات." },
+      { en: "Uses characteristic gestures or vocalizations to express wants", ar: "يستخدم إيماءات مميزة أو أصوات للتعبير عن رغباته." }
+    ]
+  },
+  {
+    ageGroup: "13-18 شهراً",
+    items: [
+      { en: "Imitates individual words", ar: "يقلد كلمات فردية." },
+      { en: "Uses adult-like intonation patterns", ar: "يستخدم أنماط تنغيم تشبه الكبار." },
+      { en: "Uses echolalia and jargon", ar: "يستخدم الترديد والرطانة." },
+      { en: "Omits some initial consonants and almost all final consonants", ar: "يحذف بعض الحروف الساكنة في بداية الكلمة ومعظم الحروف الساكنة في نهايتها." },
+      { en: "Produces mostly unintelligible speech", ar: "ينتج كلاماً غير مفهوم في الغالب." },
+      { en: "Follows simple commands", ar: "يتبع أوامر بسيطة." },
+      { en: "Receptively identifies one to three body parts", ar: "يتعرف على جزء إلى ثلاثة أجزاء من الجسم (استقبالياً)." },
+      { en: "Has an expressive vocabulary of 3 to 20 or more words (mostly nouns)", ar: "لديه حصيلة تعبيرية من 3 إلى 20 كلمة أو أكثر (معظمها أسماء)." },
+      { en: "Combines gestures and vocalization", ar: "يجمع بين الإيماءات والأصوات." },
+      { en: "Makes requests for more of desired items", ar: "يطلب المزيد من الأشياء المرغوبة." }
+    ]
+  },
+  {
+    ageGroup: "19-24 شهراً",
+    items: [
+      { en: "Uses words more frequently than jargon", ar: "يستخدم الكلمات أكثر من الرطانة." },
+      { en: "Has an expressive vocabulary of 50 to 100 or more words", ar: "لديه حصيلة تعبيرية من 50 إلى 100 كلمة أو أكثر." },
+      { en: "Has a receptive vocabulary of 300 or more words", ar: "لديه حصيلة استقبالية من 300 كلمة أو أكثر." },
+      { en: "Starts to combine nouns with verbs and nouns with adjectives", ar: "يبدأ في دمج الأسماء مع الأفعال والأسماء مع الصفات." },
+      { en: "Begins to use pronouns", ar: "يبدأ في استخدام الضمائر." },
+      { en: "Maintains unstable voice control", ar: "لديه تحكم غير مستقر في الصوت." },
+      { en: "Uses appropriate intonation for questions", ar: "يستخدم التنغيم المناسب للأسئلة." },
+      { en: "Is approximately 25% to 50% intelligible to strangers", ar: "كلامه مفهوم للغرباء بنسبة 25% إلى 50% تقريباً." },
+      { en: "Asks and answers “What’s that?” questions", ar: "يسأل ويجيب على أسئلة 'ما هذا؟'." },
+      { en: "Enjoys listening to stories", ar: "يستمتع بالاستماع للقصص." },
+      { en: "Knows five body parts", ar: "يعرف خمسة أجزاء من الجسم." },
+      { en: "Accurately names a few familiar objects", ar: "يسمي بدقة بعض الأشياء المألوفة." },
+      { en: "Understands basic categories (e.g., toys, food)", ar: "يفهم الفئات الأساسية (مثل الألعاب، الطعام)." },
+      { en: "Points to pictures in a book when named", ar: "يشير إلى الصور في الكتاب عند تسميتها." }
+    ]
+  },
+  {
+    ageGroup: "2-3 سنوات",
+    items: [
+      { en: "Speech is 50% to 75% intelligible", ar: "الكلام مفهوم بنسبة 50% إلى 75%." },
+      { en: "Understands one and all", ar: "يفهم 'واحد' و'كل'." },
+      { en: "Verbalizes toilet needs (before, during, or after act)", ar: "يعبر لفظياً عن احتياجه للحمام (قبل، أثناء، أو بعد)." },
+      { en: "Requests items by name", ar: "يطلب الأشياء بأسمائها." },
+      { en: "Identifies several body parts", ar: "يتعرف على عدة أجزاء من الجسم." },
+      { en: "Follows two-part commands", ar: "يتبع أوامر من جزأين." },
+      { en: "Asks one- to two-word questions", ar: "يطرح أسئلة من كلمة إلى كلمتين." },
+      { en: "Uses two- to four-word phrases", ar: "يستخدم عبارات من كلمتين إلى أربع كلمات." },
+      { en: "Uses words that are general in context", ar: "يستخدم كلمات عامة في السياق." },
+      { en: "Continues use of echolalia when difficulties in speech are encountered", ar: "يستمر في استخدام الترديد عند مواجهة صعوبات في الكلام." },
+      { en: "Has a receptive vocabulary of 500 to 900 or more words", ar: "لديه حصيلة استقبالية من 500 إلى 900 كلمة أو أكثر." },
+      { en: "Has an expressive vocabulary of 50 to 250 or more words", ar: "لديه حصيلة تعبيرية من 50 إلى 250 كلمة أو أكثر." },
+      { en: "Exhibits multiple grammatical errors", ar: "يظهر أخطاء نحوية متعددة." },
+      { en: "Understands most things said to him or her", ar: "يفهم معظم ما يقال له." },
+      { en: "Frequently exhibits repetitions—especially starters, “I,” and first syllables", ar: "يظهر تكراراً متكرراً - خاصة البدايات، 'أنا'، والمقاطع الأولى." },
+      { en: "Increases range of pitch", ar: "يزيد من نطاق طبقة الصوت." },
+      { en: "Uses vowels correctly", ar: "يستخدم حروف العلة بشكل صحيح." },
+      { en: "Consistently uses initial consonants (although some are misarticulated)", ar: "يستخدم الحروف الساكنة الأولية باستمرار (وإن كان بعضها ينطق خطأ)." },
+      { en: "Frequently omits medial consonants", ar: "يحذف الحروف الساكنة الوسطى بشكل متكرر." },
+      { en: "Frequently omits or substitutes final consonants", ar: "يحذف أو يستبدل الحروف الساكنة النهائية بشكل متكرر." },
+      { en: "Uses auxiliary is including the contracted form (e.g., isn’t, he’s)", ar: "يستخدم الفعل المساعد 'is' بما في ذلك الصيغة المختصرة." },
+      { en: "Uses some regular past-tense verbs, possessive morphemes, pronouns, and imperatives", ar: "يستخدم بعض أفعال الماضي المنتظمة، والضمائر، وصيغ الملكية، والأوامر." },
+      { en: "Maintains topic over several conversational turns", ar: "يحافظ على الموضوع عبر عدة أدوار حوارية." }
+    ]
+  },
+  {
+    ageGroup: "3-4 سنوات",
+    items: [
+      { en: "Understands object functions", ar: "يفهم وظائف الأشياء." },
+      { en: "Understands opposites (e.g., stop-go, in-out, big-little)", ar: "يفهم الأضداد (مثل توقف-اذهب، داخل-خارج، كبير-صغير)." },
+      { en: "Follows two- and three-part commands", ar: "يتبع أوامر من جزأين وثلاثة أجزاء." },
+      { en: "Produces simple verbal analogies", ar: "ينتج تشبيهات لفظية بسيطة." },
+      { en: "Uses language to express emotion", ar: "يستخدم اللغة للتعبير عن المشاعر." },
+      { en: "Uses four to five words in sentences", ar: "يستخدم من أربع إلى خمس كلمات في الجمل." },
+      { en: "Repeats 6- to 13-syllable sentences accurately", ar: "يكرر جملاً من 6 إلى 13 مقطعاً بدقة." },
+      { en: "May continue to use echolalia", ar: "قد يستمر في استخدام الترديد." },
+      { en: "Uses nouns and verbs most frequently", ar: "يستخدم الأسماء والأفعال بشكل متكرر." },
+      { en: "Is conscious of past and future", ar: "يدرك الماضي والمستقبل." },
+      { en: "Has a receptive vocabulary of 1,200 to 2,000 or more words", ar: "لديه حصيلة استقبالية من 1200 إلى 2000 كلمة أو أكثر." },
+      { en: "Has an expressive vocabulary of 800 to 1,500 or more words", ar: "لديه حصيلة تعبيرية من 800 إلى 1500 كلمة أو أكثر." },
+      { en: "Increases speech rate", ar: "يزيد من سرعة الكلام." },
+      { en: "Speech is approximately 80% intelligible", ar: "الكلام مفهوم بنسبة 80% تقريباً." },
+      { en: "Appropriately uses is, are, and am in sentences", ar: "يستخدم 'is'، 'are'، و 'am' بشكل مناسب في الجمل." },
+      { en: "Tells two events in chronological order", ar: "يروي حدثين بالترتيب الزمني." },
+      { en: "Engages in long conversations", ar: "ينخرط في محادثات طويلة." },
+      { en: "Sentence grammar improves, although some errors persist", ar: "تتحسن قواعد الجملة، وإن استمرت بعض الأخطاء." },
+      { en: "Uses some contractions, irregular plurals, future-tense verbs, and conjunctions", ar: "يستخدم بعض الاختصارات، وجمع التكسير، وأفعال المستقبل، وأدوات العطف." },
+      { en: "Consistently uses regular plurals, possessives, and simple past-tense verbs", ar: "يستخدم الجمع المنتظم، والملكية، وأفعال الماضي البسيط باستمرار." },
+      { en: "Uses an increasing number of compound or complex sentences", ar: "يستخدم عدداً متزايداً من الجمل المركبة أو المعقدة." }
+    ]
+  },
+  {
+    ageGroup: "4-5 سنوات",
+    items: [
+      { en: "Continues understanding of spatial concepts", ar: "يستمر في فهم المفاهيم المكانية." },
+      { en: "Has an expressive vocabulary of 900 to 2,000 or more words", ar: "لديه حصيلة تعبيرية من 900 إلى 2000 كلمة أو أكثر." },
+      { en: "Has a receptive vocabulary of 10,000 or more words", ar: "لديه حصيلة استقبالية من 10000 كلمة أو أكثر." },
+      { en: "Counts to 10 by rote", ar: "يعد حتى 10 عن ظهر قلب." },
+      { en: "Listens to short, simple stories and can answer questions about them", ar: "يستمع لقصص قصيرة بسيطة ويجيب عن أسئلة حولها." },
+      { en: "Answers questions about function", ar: "يجيب عن أسئلة حول الوظيفة." },
+      { en: "Uses adult-like grammar most of the time", ar: "يستخدم قواعد نحوية تشبه الكبار في معظم الوقت." },
+      { en: "Uses sentences of four to eight words", ar: "يستخدم جملاً من أربع إلى ثماني كلمات." },
+      { en: "Answers complex two-part questions", ar: "يجيب عن أسئلة معقدة من جزأين." },
+      { en: "Asks for word definitions", ar: "يسأل عن تعريف الكلمات." },
+      { en: "Speaks at a rate of approximately 186 words per minute", ar: "يتحدث بمعدل 186 كلمة في الدقيقة تقريباً." },
+      { en: "Reduces total number of repetitions", ar: "يقلل من إجمالي عدد التكرارات." },
+      { en: "Significantly reduces number of persistent sound omissions and substitutions", ar: "يقلل بشكل كبير من حذف الأصوات واستبدالها المستمر." },
+      { en: "Speech is usually intelligible to strangers", ar: "الكلام عادة مفهوم للغرباء." },
+      { en: "Accurately tells about experiences at school, at friends’ homes, etc.", ar: "يروي بدقة عن تجاربه في المدرسة، منزل الأصدقاء، إلخ." }
+    ]
+  },
+  {
+    ageGroup: "5-6 سنوات",
+    items: [
+      { en: "Follows instructions given to a group", ar: "يتبع التعليمات الموجهة للمجموعة." },
+      { en: "Asks how questions", ar: "يسأل أسئلة 'كيف'." },
+      { en: "Uses past tense and future tense appropriately", ar: "يستخدم الزمن الماضي والمستقبل بشكل مناسب." },
+      { en: "Uses conjunctions", ar: "يستخدم أدوات العطف." },
+      { en: "Has a receptive vocabulary of approximately 13,000 words", ar: "لديه حصيلة استقبالية من حوالي 13000 كلمة." },
+      { en: "Sequentially names days of the week", ar: "يسمي أيام الأسبوع بالتسلسل." },
+      { en: "Counts to 30 by rote", ar: "يعد حتى 30 عن ظهر قلب." },
+      { en: "Continues to rapidly increase vocabulary", ar: "يستمر في زيادة المفردات بسرعة." },
+      { en: "Uses sentence length of four to six words", ar: "يستخدم جملاً بطول أربع إلى ست كلمات." },
+      { en: "Reverses sounds occasionally", ar: "يعكس الأصوات أحياناً." },
+      { en: "Exchanges information and asks questions", ar: "يتبادل المعلومات ويطرح الأسئلة." },
+      { en: "Uses sentences with details", ar: "يستخدم جملاً تحتوي على تفاصيل." },
+      { en: "Accurately relays a story", ar: "ينقل قصة بدقة." },
+      { en: "Sings entire songs and recites nursery rhymes", ar: "يغني أغاني كاملة ويردد أناشيد الحضانة." },
+      { en: "Communicates easily with adults and other children", ar: "يتواصل بسهولة مع البالغين والأطفال الآخرين." },
+      { en: "Uses appropriate grammar in most cases", ar: "يستخدم القواعد النحوية المناسبة في معظم الحالات." }
+    ]
+  },
+  {
+    ageGroup: "6-7 سنوات",
+    items: [
+      { en: "Understands left and right", ar: "يفهم اليسار واليمين." },
+      { en: "Uses increasingly more complex descriptions", ar: "يستخدم أوصافاً أكثر تعقيداً." },
+      { en: "Engages in conversations", ar: "ينخرط في المحادثات." },
+      { en: "Has a receptive vocabulary of approximately 20,000 words", ar: "لديه حصيلة استقبالية من حوالي 20000 كلمة." },
+      { en: "Uses a sentence length of approximately six words", ar: "يستخدم جملاً بطول ست كلمات تقريباً." },
+      { en: "Understands most concepts of time", ar: "يفهم معظم مفاهيم الوقت." },
+      { en: "Counts to 100 by rote", ar: "يعد حتى 100 عن ظهر قلب." },
+      { en: "Uses most morphologic markers appropriately", ar: "يستخدم معظم العلامات الصرفية بشكل مناسب." },
+      { en: "Uses passive voice appropriately", ar: "يستخدم المبني للمجهول بشكل مناسب." }
+    ]
+  }
+];
 
-  if (!r1 || !r2 || !e1 || !e2 || !e3 || !s1 || !s2) {
-    alert('الرجاء الإجابة على جميع الأسئلة أولاً لإعطاء تحليل دقيق.');
+// توليد الاستمارة
+function generateForm() {
+  const container = document.getElementById('itemsContainer');
+  inventoryData.forEach((group, groupIndex) => {
+    const groupDiv = document.createElement('div');
+    groupDiv.innerHTML = `<div class="age-group-title">${group.ageGroup}</div>`;
+    
+    group.items.forEach((item, itemIndex) => {
+      const row = document.createElement('div');
+      row.className = 'item-row';
+      row.innerHTML = `
+        <div class="item-text" dir="rtl">${item.ar}</div>
+        <div class="rating-group">
+          <label><input type="radio" name="item_${groupIndex}_${itemIndex}" value="2"> يوجد</label>
+          <label><input type="radio" name="item_${groupIndex}_${itemIndex}" value="1"> أحياناً</label>
+          <label><input type="radio" name="item_${groupIndex}_${itemIndex}" value="0"> لا يوجد</label>
+        </div>
+      `;
+      groupDiv.appendChild(row);
+    });
+    container.appendChild(groupDiv);
+  });
+}
+
+function analyzeInventory() {
+  let totalPossible = 0;
+  let totalScore = 0;
+  let ageGroupScores = [];
+  let missingAnswers = false;
+
+  inventoryData.forEach((group, groupIndex) => {
+    let groupPossible = group.items.length * 2;
+    let groupScore = 0;
+    
+    group.items.forEach((item, itemIndex) => {
+      const selected = document.querySelector(`input[name="item_${groupIndex}_${itemIndex}"]:checked`);
+      if (!selected) {
+        missingAnswers = true;
+      } else {
+        groupScore += parseInt(selected.value);
+      }
+    });
+    
+    totalPossible += groupPossible;
+    totalScore += groupScore;
+    ageGroupScores.push({
+      group: group.ageGroup,
+      score: groupScore,
+      possible: groupPossible,
+      percentage: (groupScore / groupPossible) * 100
+    });
+  });
+
+  if (missingAnswers) {
+    alert('الرجاء الإجابة على جميع البنود للحصول على تحليل دقيق.');
     return;
   }
 
-  // تحويل الإجابات إلى منطقية
-  let receptiveScore = (r1.value === 'yes' ? 1 : 0) + (r2.value === 'yes' ? 1 : 0);
-  let expressiveScore = (e1.value === 'yes' ? 1 : 0) + (e2.value === 'yes' ? 1 : 0) + (e3.value === 'yes' ? 1 : 0);
-  let socialScore = (s1.value === 'yes' ? 1 : 0) + (s2.value === 'yes' ? 1 : 0);
-
+  const overallPercentage = (totalScore / totalPossible) * 100;
+  
   let diagnosis = "";
-  let justification = "";
   let recommendation = "";
+  let severityColor = "";
 
-  // الخوارزمية التشخيصية بناءً على الإجابات
-  if (socialScore === 0 && expressiveScore === 0) {
-    diagnosis = "اضطراب طيف التوحد (Autism Spectrum Disorder - ASD) - اشتباه عالي";
-    justification = "بناءً على غياب التواصل البصري، وغياب التفاعل الاجتماعي، مع غياب اللغة التعبيرية. هذه العلامات تتوافق مع المعايير التشخيصية لـ DSM-5 (نقص التواصل الاجتماعي والتفاعل).";
-    recommendation = "يوصى بتحويل فوري لتقييم تشخيصي متخصص لطيف التوحد (مثل ADOS-2)، وبدء تدخل سلوكي مبكر (ABA) بعد التقييم. يرجى فتح موقع ABLLS-R لإجراء تقييم مهارات شامل.";
-  } 
-  else if (receptiveScore === 0 && expressiveScore === 0) {
-    diagnosis = "اضطراب اللغة المختلط (Mixed Receptive-Expressive Language Disorder)";
-    justification = "بناءً على أن الطفل يعاني من صعوبة في فهم اللغة (الاستقبال) وفي التعبير عنها في نفس الوقت، وفقاً لمعايير DSM-5 و ASHA.";
-    recommendation = "تقييم شامل للغة (استخدام CELF-Preschool أو PLS-5). تصميم خطة علاجية تشمل تدريبات الفهم السمعي، وتوسيع الحصيلة اللغوية، وتدريب الأهل على تقنيات النمذجة اللغوية.";
-  } 
-  else if (receptiveScore === 0 && expressiveScore > 0) {
-    diagnosis = "اضطراب اللغة الاستقبالي (Receptive Language Disorder)";
-    justification = "بناءً على وجود قصور في مهارات فهم اللغة المسموعة، مع وجود مهارات تعبيرية نسبياً أفضل.";
-    recommendation = "التقييم الدقيق لمهارات الفهم (اتباع التعليمات، التمييز السمعي)، وبدء العلاج بتدريبات الإدراك السمعي.";
-  } 
-  else if (receptiveScore > 0 && expressiveScore === 0) {
-    diagnosis = "اضطراب اللغة التعبيري (Expressive Language Disorder)";
-    justification = "بناءً على وجود قصور في المهارات التعبيرية (المفردات، بناء الجمل)، مع فهم سليم.";
-    recommendation = "تقييم اللغة التعبيرية، وتصميم خطة علاجية لزيادة المفردات وتدريب استخدام الجمل، واستخدام التقييمات المعتمدة مثل ABLLS-R.";
-  } 
-  else {
-    diagnosis = "تطور لغوي ضمن الحدود الطبيعية (أو تأخر بسيط)";
-    justification = "بناءً على الإجابات، يبدو أن الطفل يمتلك مهارات فهم وتعبير وتواصل اجتماعي أساسية.";
-    recommendation = "يوصى بمراقبة النمو اللغوي بشكل دوري. إذا استمر القلق، يمكن إجراء تقييم لغوي رسمي (Formal Assessment).";
+  if (overallPercentage >= 85) {
+    diagnosis = "نمو لغوي ضمن الحدود الطبيعية";
+    recommendation = "المستفيد يمتلك معظم المهارات المتوقعة لعمره. يوصى بالمراقبة الدورية ودعم النمو اللغوي من خلال الأنشطة اليومية.";
+    severityColor = "#10b981";
+  } else if (overallPercentage >= 70) {
+    diagnosis = "تأخر لغوي بسيط (Mild Language Delay)";
+    recommendation = "يوصى بتقييم لغوي رسمي (Formal Assessment) مثل CELF-Preschool، وتقديم أنشطة لغوية منزلية مكثفة. المتابعة بعد 3 أشهر.";
+    severityColor = "#3b82f6";
+  } else if (overallPercentage >= 50) {
+    diagnosis = "تأخر لغوي متوسط (Moderate Language Delay)";
+    recommendation = "يوصى ببدء تدخل علاجي مباشر (Speech Therapy) مع التركيز على المهارات المفقودة. استخدام ABLLS-R لتقييم أعمق.";
+    severityColor = "#f59e0b";
+  } else {
+    diagnosis = "تأخر لغوي شديد أو اضطراب لغوي (Severe Language Delay/Disorder)";
+    recommendation = "يوصى بتحويل فوري لتقييم شامل متعدد التخصصات (سمع، نمو، نفسي)، وبدء خطة تدخل مكثفة (IEP).";
+    severityColor = "#dc2626";
   }
 
-  document.getElementById('diagnosisTitle').textContent = diagnosis;
-  document.getElementById('justification').textContent = justification;
-  document.getElementById('recommendationText').textContent = recommendation;
-  
+  let groupBreakdown = ageGroupScores.map(g => `<li><strong>${g.group}:</strong> ${g.percentage.toFixed(1)}%</li>`).join('');
+
+  const resultHTML = `
+    <h3>نتيجة التحليل</h3>
+    <div style="font-size:20px; font-weight:bold; color:${severityColor}; margin-bottom:20px;">${diagnosis}</div>
+    <p style="font-size:15px; margin-bottom:15px;">النسبة الإجمالية لتحقيق المهارات المتوقعة: <strong>${overallPercentage.toFixed(1)}%</strong></p>
+    
+    <div class="section-title">التفصيل حسب الفئة العمرية:</div>
+    <ul style="list-style:none; padding:0; margin-bottom:20px; line-height:2;">
+      ${groupBreakdown}
+    </ul>
+
+    <div class="section-title">التوصيات:</div>
+    <div class="recommendation">${recommendation}</div>
+  `;
+
+  document.getElementById('resultContent').innerHTML = resultHTML;
   const resultArea = document.getElementById('resultArea');
   resultArea.style.display = 'block';
   resultArea.scrollIntoView({ behavior: 'smooth' });
 }
+
+// تشغيل التوليد عند تحميل الصفحة
+window.onload = generateForm;
 </script>
 </body>
 </html>
